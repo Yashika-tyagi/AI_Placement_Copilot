@@ -26,7 +26,7 @@ function JobMatcher() {
       }
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/job-match",
+        `${import.meta.env.VITE_API_URL}/api/job-match`,
         {
           method: "POST",
 

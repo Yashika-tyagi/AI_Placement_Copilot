@@ -108,7 +108,7 @@ function ResumeAnalyzer() {
       formData.append("file", file);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/api/resume/upload",
+        `${import.meta.env.VITE_API_URL}/api/resume/upload`,
         {
           method: "POST",
           headers: {

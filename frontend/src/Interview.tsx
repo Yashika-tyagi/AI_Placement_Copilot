@@ -29,7 +29,7 @@ function Interview() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/interview/question",
+        `${import.meta.env.VITE_API_URL}/api/interview/question`,
         {
           method: "GET",
           headers: {
@@ -89,7 +89,7 @@ function Interview() {
 
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/api/interview/evaluate",
+        `${import.meta.env.VITE_API_URL}/api/interview/evaluate`,
         {
           method: "POST",
 
