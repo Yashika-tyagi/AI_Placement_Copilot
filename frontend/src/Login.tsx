@@ -1,0 +1,118 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    setError("");
+
+    if (!email.trim() || !password.trim()) {
+      setError("Please enter email and password.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log("Login response:", data);
+
+      if (!response.ok) {
+        throw new Error(
+          data.detail || "Login failed."
+        );
+      }
+
+      // Save JWT token
+      localStorage.setItem(
+        "token",
+        data.access_token
+      );
+
+      // Go to dashboard
+      navigate("/");
+    } catch (err: any) {
+      console.error("LOGIN ERROR:", err);
+
+      setError(
+        err.message ||
+          "Something went wrong during login."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="login-page">
+
+      <div className="login-card">
+
+        <div className="brand-icon">⚡</div>
+
+        <h1>AI Placement Copilot</h1>
+
+        <p>
+          Login to continue your placement preparation.
+        </p>
+
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) =>
+            setEmail(e.target.value)
+          }
+        />
+
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
+        />
+
+        <button
+          className="primary-button"
+          onClick={handleLogin}
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+
+        {error && (
+          <p className="error-message">
+            {error}
+          </p>
+        )}
+
+      </div>
+
+    </div>
+  );
+}
+
+export default Login;

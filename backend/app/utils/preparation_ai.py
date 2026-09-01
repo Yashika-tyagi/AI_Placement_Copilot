@@ -29,45 +29,65 @@ def generate_preparation_plan(
     interview_weaknesses
 ):
 
-    prompt = f"""
-You are an AI placement preparation assistant.
+    prompt = prompt = f"""
+You are an AI career preparation assistant.
 
-Create a personalized 30-day preparation plan for a student.
+Create a personalized preparation plan for the student based on:
+- Resume/profile
+- Skills
+- Target role
+- Interview performance
 
-TARGET ROLE:
-{target_role}
+IMPORTANT OUTPUT FORMAT:
 
-RESUME PROFILE:
+Generate the plan in Markdown.
+
+Divide the plan into multiple weeks.
+
+For EVERY week, create a separate Markdown table.
+
+Each table MUST have exactly these columns:
+
+| Day | Task | Resource | Output |
+|-----|------|----------|--------|
+
+Example format:
+
+## Week 1
+
+| Day | Task | Resource | Output |
+|-----|------|----------|--------|
+| Day 1 | Learn Arrays and Sliding Window | LeetCode | Solve 5 problems |
+| Day 2 | Practice Two Pointers | LeetCode | Solve 5 problems |
+| Day 3 | Learn Hashing | LeetCode | Solve 5 problems |
+
+## Week 2
+
+| Day | Task | Resource | Output |
+|-----|------|----------|--------|
+| Day 1 | Learn System Design Basics | Grokking System Design | Prepare notes |
+| Day 2 | Learn Database Design | MongoDB Documentation | Practice queries |
+| Day 3 | Learn Caching | Redis Documentation | Implement caching |
+
+RULES:
+1. Every week MUST have its own table.
+2. Use exactly four columns: Day, Task, Resource, Output.
+3. Do NOT use bullet points for daily tasks.
+4. Do NOT create separate headings for Day 1, Day 2, etc.
+5. Use Markdown tables for all weekly schedules.
+6. Make the plan personalized to the student's profile.
+7. Include practical tasks and resources.
+8. Keep the plan realistic and actionable.
+9. Generate multiple weeks according to the student's preparation needs.
+
+Student Profile:
 {profile}
 
-MISSING SKILLS FROM JOB MATCHER:
-{missing_skills}
+Target Role:
+{target_role}
 
-INTERVIEW WEAKNESSES:
+Interview Weaknesses:
 {interview_weaknesses}
-
-Create a realistic preparation plan based on the student's
-actual profile and weaknesses.
-
-The plan must contain:
-
-1. Readiness Score out of 100
-2. Main Skill Gaps
-3. Week 1
-4. Week 2
-5. Week 3
-6. Week 4
-7. Interview Preparation
-8. DSA Preparation
-9. Technical Preparation
-
-For each week provide clear and actionable tasks.
-
-Do not give generic motivational advice.
-
-Focus on skills that are actually missing or weak.
-
-Return the response in a clean readable format.
 """
 
     response = llm.invoke(prompt)
