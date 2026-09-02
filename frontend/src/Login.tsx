@@ -44,6 +44,7 @@ function Login() {
 
       // Save JWT token
       localStorage.setItem("token", data.access_token);
+      window.dispatchEvent(new Event("authChange"));
 
       // Go to dashboard
       navigate("/");

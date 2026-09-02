@@ -1,5 +1,5 @@
 import { NavLink, Routes, Route, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useState2,useEffect } from "react";
 import "./App.css";
 import JobMatcher from "./JobMatcher";
 import Interview from "./Interview";
@@ -459,7 +459,7 @@ function App() {
   );
 
   // Listen for login/logout changes
-  useState(() => {
+  useEffect(() => {
     const handleAuthChange = () => {
       setIsLoggedIn(!!localStorage.getItem("token"));
     };
