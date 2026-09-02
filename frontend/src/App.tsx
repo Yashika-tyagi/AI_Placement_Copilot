@@ -1,5 +1,5 @@
 import { NavLink, Routes, Route, Navigate } from "react-router-dom";
-import { useState2,useEffect } from "react";
+import { useState,useEffect } from "react";
 import "./App.css";
 import JobMatcher from "./JobMatcher";
 import Interview from "./Interview";
