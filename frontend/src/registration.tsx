@@ -1,19 +1,27 @@
 import { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 
-function Login() {
+function Registration() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [targetRole, setTargetRole] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     setError("");
 
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter email and password.");
+    if (
+      !name.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !targetRole.trim()
+    ) {
+      setError("Please fill all fields.");
       return;
     }
 
@@ -21,37 +29,40 @@ function Login() {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            name,
             email,
             password,
+            target_role: targetRole,
           }),
         }
       );
 
       const data = await response.json();
 
-      console.log("Login response:", data);
+      console.log("Registration response:", data);
 
       if (!response.ok) {
-        throw new Error(data.detail || "Login failed.");
+        throw new Error(
+          data.detail || "Registration failed."
+        );
       }
 
-      // Save JWT token
-      localStorage.setItem("token", data.access_token);
+      alert("Registration successful! Please login.");
 
-      // Go to dashboard
-      navigate("/");
+      navigate("/login");
     } catch (err: any) {
-      console.error("LOGIN ERROR:", err);
+      console.error("REGISTRATION ERROR:", err);
 
       setError(
-        err.message || "Something went wrong during login."
+        err.message ||
+          "Something went wrong during registration."
       );
     } finally {
       setLoading(false);
@@ -67,8 +78,15 @@ function Login() {
         <h1>AI Placement Copilot</h1>
 
         <p>
-          Login to continue your placement preparation.
+          Create your account to start your placement preparation.
         </p>
+
+        <input
+          type="text"
+          placeholder="Enter your name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
 
         <input
           type="email"
@@ -79,17 +97,24 @@ function Login() {
 
         <input
           type="password"
-          placeholder="Enter your password"
+          placeholder="Create a password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        <input
+          type="text"
+          placeholder="Target role (e.g. Software Engineer)"
+          value={targetRole}
+          onChange={(e) => setTargetRole(e.target.value)}
+        />
+
         <button
           className="primary-button"
-          onClick={handleLogin}
+          onClick={handleRegister}
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? "Creating Account..." : "Create Account"}
         </button>
 
         {error && (
@@ -99,9 +124,9 @@ function Login() {
         )}
 
         <p className="register-link">
-          Don't have an account?{" "}
-          <NavLink to="/register">
-            Create Account
+          Already have an account?{" "}
+          <NavLink to="/login">
+            Login
           </NavLink>
         </p>
 
@@ -110,4 +135,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Registration;

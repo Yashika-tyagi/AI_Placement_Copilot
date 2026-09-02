@@ -5,6 +5,7 @@ import JobMatcher from "./JobMatcher";
 import Interview from "./Interview";
 import Preparation from "./Preparation";
 import Login from "./Login";
+import Registration from "./registration";
 
 function Dashboard() {
   return (
@@ -453,6 +454,47 @@ function ResumeAnalyzer() {
 
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  // Listen for login/logout changes
+  useState(() => {
+    const handleAuthChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+
+    window.addEventListener("authChange", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("authChange", handleAuthChange);
+    };
+  });
+
+  // Login and Register should have their own full-page UI
+  if (!isLoggedIn) {
+    return (
+      <Routes>
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Registration />}
+        />
+
+        {/* Any protected page → Login */}
+        <Route
+          path="*"
+          element={<Navigate to="/login" replace />}
+        />
+      </Routes>
+    );
+  }
+
+  // Logged-in user gets the main application
   return (
     <div className="app">
 
@@ -461,18 +503,20 @@ function App() {
       <header className="navbar">
 
         <div className="navbar-brand">
-          <div className="brand-icon">⚡</div>
+
+          <div className="brand-icon">
+            ⚡
+          </div>
 
           <div>
             <h1>AI Placement Copilot</h1>
             <span>AI Career Assistant</span>
           </div>
+
         </div>
 
         <div className="navbar-right">
           <span>👤 Student</span>
-
-          
         </div>
 
       </header>
@@ -495,7 +539,9 @@ function App() {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
+                isActive
+                  ? "sidebar-link active"
+                  : "sidebar-link"
               }
             >
               <span>🏠</span>
@@ -514,7 +560,9 @@ function App() {
             <NavLink
               to="/resume"
               className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
+                isActive
+                  ? "sidebar-link active"
+                  : "sidebar-link"
               }
             >
               <span>📄</span>
@@ -524,7 +572,9 @@ function App() {
             <NavLink
               to="/job-matcher"
               className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
+                isActive
+                  ? "sidebar-link active"
+                  : "sidebar-link"
               }
             >
               <span>💼</span>
@@ -543,7 +593,9 @@ function App() {
             <NavLink
               to="/interview"
               className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
+                isActive
+                  ? "sidebar-link active"
+                  : "sidebar-link"
               }
             >
               <span>🎤</span>
@@ -553,7 +605,9 @@ function App() {
             <NavLink
               to="/preparation"
               className={({ isActive }) =>
-                isActive ? "sidebar-link active" : "sidebar-link"
+                isActive
+                  ? "sidebar-link active"
+                  : "sidebar-link"
               }
             >
               <span>🧠</span>
@@ -570,10 +624,6 @@ function App() {
         <main className="main-content">
 
           <Routes>
-            <Route
-    path="/login"
-    element={<Login />}
-  />
 
             <Route
               path="/"
@@ -599,6 +649,20 @@ function App() {
               path="/preparation"
               element={<Preparation />}
             />
+
+            {/* Logged-in user shouldn't access login/register */}
+
+            <Route
+              path="/login"
+              element={<Navigate to="/" replace />}
+            />
+
+            <Route
+              path="/register"
+              element={<Navigate to="/" replace />}
+            />
+
+            {/* Unknown route */}
 
             <Route
               path="*"
